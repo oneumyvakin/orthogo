@@ -1,6 +1,8 @@
 package orthogo
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestOneColumnOneRow(t *testing.T) {
 	input := []Row{}
@@ -133,5 +135,23 @@ func TestFourColumns(t *testing.T) {
 	t.Logf("Output: %#v", output)
 	if len(output) != 4 {
 		t.Errorf("output size != 4:\ninput:\n%#v\noutput:\n%#v", input, output)
+	}
+}
+
+func TestAllCombinations(t *testing.T) {
+	input := map[string][]string{
+		"RoomCount":  {"1", "2", "3", "4"},
+		"AdultCount": {"1", "2", "3", "4"},
+		"KidAge1":    {"-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"},
+		"KidAge2":    {"-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"},
+		"KidAge3":    {"-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"},
+		"KidAge4":    {"-", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17"},
+	}
+	output := AllCombinations(input)
+
+	t.Logf("AllCombinations: %d", len(output))
+	mustLen := 2085136
+	if len(output) != mustLen {
+		t.Errorf("output size %d != %d", len(output), mustLen)
 	}
 }

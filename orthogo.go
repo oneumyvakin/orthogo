@@ -50,3 +50,65 @@ func Orthogonate(input []Row) (output []Row) {
 
 	return
 }
+
+// Combines all possible fields values to Rows
+func AllCombinations(input map[string][]string) (output []Row) {
+	deleteDups := func(result []Row) []Row {
+		hashes := map[string]bool{}
+		fieldNames := []string{}
+		for fieldName := range input {
+			fieldNames = append(fieldNames, fieldName)
+		}
+		cleanedResult := []Row{}
+		for _, row := range result {
+			hash := ""
+			for _, fieldName := range fieldNames {
+				hash += fieldName + row[fieldName]
+			}
+			if _, found := hashes[hash]; !found {
+				cleanedResult = append(cleanedResult, row)
+				hashes[hash] = true
+			}
+		}
+		return cleanedResult
+	}
+
+	addRow := func(resRow Row, fieldName string, val string) Row {
+		if _, ok := resRow[fieldName]; !ok {
+			resRow[fieldName] = val
+			return resRow
+		}
+		if rVal, ok := resRow[fieldName]; ok && rVal == val {
+			return nil
+		}
+		if rVal, ok := resRow[fieldName]; ok && rVal != val {
+			newRow := Row{}
+			for resRowFieldName, resRowFieldVal := range resRow {
+				newRow[resRowFieldName] = resRowFieldVal
+			}
+			newRow[fieldName] = val
+			return newRow
+		}
+		return nil
+	}
+
+	result := []Row{}
+	for fieldName, fieldVals := range input {
+		for _, val := range fieldVals {
+			if len(result) == 0 {
+				newRow := Row{}
+				newRow[fieldName] = val
+				result = append(result, newRow)
+			}
+			for _, resRow := range result {
+				if newRow := addRow(resRow, fieldName, val); newRow != nil {
+					result = append(result, newRow)
+				}
+			}
+
+			result = deleteDups(result)
+		}
+	}
+
+	return deleteDups(result)
+}
