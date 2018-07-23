@@ -20,28 +20,30 @@ func Orthogonate(input []Row) (output []Row) {
 	}
 
 	allPairs := map[string]bool{}
-	for _, iItem := range input {
+	for _, row := range input {
 		pairs := []string{}
 		for iKey, ivKey := range keys {
 			yKey := iKey + 1
 			if yKey >= keysLen {
 				if keysLen > 2 {
-					pairs = append(pairs, iItem[keys[0]]+iItem[keys[keysLen-1]])
+					pair := keys[0]+"|||"+row[keys[0]]+"|||"+keys[keysLen-1]+"|||"+row[keys[keysLen-1]]
+					pairs = append(pairs, pair)
 				}
 				break
 			}
 			yvKey := keys[yKey]
-			pairs = append(pairs, iItem[ivKey]+iItem[yvKey])
+			pair := ivKey+"|||"+row[ivKey]+"|||"+yvKey+"|||"+row[yvKey]
+			pairs = append(pairs, pair)
 		}
 
-		uniquePair := true
+		hasUniquePair := false
 		for _, pair := range pairs {
-			if found := allPairs[pair]; found {
-				uniquePair = false
+			if found := allPairs[pair]; !found {
+				hasUniquePair = true
 			}
 		}
-		if uniquePair {
-			output = append(output, iItem)
+		if hasUniquePair {
+			output = append(output, row)
 			for _, pair := range pairs {
 				allPairs[pair] = true
 			}
@@ -63,7 +65,7 @@ func AllCombinations(input map[string][]string) (output []Row) {
 		for _, row := range result {
 			hash := ""
 			for _, fieldName := range fieldNames {
-				hash += fieldName + row[fieldName]
+				hash += fieldName + "|||" + row[fieldName] + "|||"
 			}
 			if _, found := hashes[hash]; !found {
 				cleanedResult = append(cleanedResult, row)
